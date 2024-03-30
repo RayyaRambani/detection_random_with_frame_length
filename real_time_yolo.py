@@ -13,7 +13,7 @@ output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
 # Loading image
-cap = cv2.VideoCapture("walking2.mp4")
+cap = cv2.VideoCapture(0)
 
 font = cv2.FONT_HERSHEY_PLAIN
 # starting_time = time.time()
@@ -28,22 +28,23 @@ while True:
 
 
     #  # Tentukan posisi garis pembagi y
-    line_y1 = height // 3
-    line_y2 = 2 * (height // 3)
+    line_y1 = height // 2
+    
+    # line_y2 = 2 * (height // 3)
 
     # # Gambar garis pembagi pada frame
     cv2.line(frame, (0, line_y1), (width, line_y1), (0, 255, 0), thickness=2)
-    cv2.line(frame, (0, line_y2), (width, line_y2), (0, 255, 0), thickness=2)
+    # cv2.line(frame, (0, line_y2), (width, line_y2), (0, 255, 0), thickness=2)
     # Tentukan posisi garis pembagi x
-    line_x1 = width // 3
-    line_x2 = 2 * (width // 3)
+    line_x1 = width // 2
+    # line_x2 = 2 * (width // 3)
 
     # Gambar garis pembagi vertikal pada frame
     cv2.line(frame, (line_x1, 0), (line_x1, height), (0, 255, 0), thickness=2)
-    cv2.line(frame, (line_x2, 0), (line_x2, height), (0, 255, 0), thickness=2)
+    # cv2.line(frame, (line_x2, 0), (line_x2, height), (0, 255, 0), thickness=2)
 
     cv2.putText(frame, f'Ukuran per frame: {width} x {height}', (10, line_y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-    cv2.putText(frame, f'Total lebar frame: {width * 3} px', (10, line_y2 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+    # cv2.putText(frame, f'Total lebar frame: {width * 3} px', (10, line_y2 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
 
 
     
@@ -64,36 +65,49 @@ while True:
             scores = detection[5:]
             class_id = np.argmax(scores)
             confidence = scores[class_id]
-            if confidence > 0.2:
+            if confidence > 0.5:
                 #0.2
                 # Object detected
                 center_x = int(detection[0] * width)
                 center_y = int(detection[1] * height)
                 w = int(detection[2] * width)
                 h = int(detection[3] * height)
-
+                print(center_x)
+                # print(center_y)
                 # Rectangle coordinates
                 x = int(center_x - w / 2)
                 y = int(center_y - h / 2)
+                if center_x > 320:
+                    print("objek dikiri")
+                elif center_x < 320:
+                    print("objek dikanan")
+                else :
+                    print("objek gada")
+            #    # Check if object detected is in any of the thirds of the frame
+            #     if x > line_x1 and x < line_x2:
+            #         text_x = 10
+            #     elif x > line_x2:
+            #         text_x = line_x2 + 10
+            #     else:
+            #         text_x = line_x1 + 10
 
-               # Check if object detected is in any of the thirds of the frame
-                if x > line_x1 and x < line_x2:
-                    text_x = 10
-                elif x > line_x2:
-                    text_x = line_x2 + 10
-                else:
-                    text_x = line_x1 + 10
 
+            #     # Check which horizontal line the object is above
+            #     if center_y < line_y1:
+            #         text_y = line_y1 - 10
+            #     elif center_y < line_y2:
+            #         text_y = line_y2 - 10
+            #     else:
+            #         text_y = line_y2 + 10
 
-                # Check which horizontal line the object is above
-                if center_y < line_y1:
-                    text_y = line_y1 - 10
-                elif center_y < line_y2:
-                    text_y = line_y2 - 10
-                else:
-                    text_y = line_y2 + 10
+                # if x > line_x1 :
+                #     text_x = 30 
+                # else: 
+                #     text_x = line_x1 + 10
 
-                cv2.putText(frame, 'Ada objek', (text_x, line_y1 ), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+               
+
+                # cv2.putText(frame, 'Ada objek', (text_x, line_y1 ), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
                 boxes.append([x, y, w, h])
                 confidences.append(float(confidence))

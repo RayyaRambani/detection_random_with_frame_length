@@ -12,7 +12,7 @@ output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
 # Loading image
-cap = cv2.VideoCapture("walking2.mp4")
+cap = cv2.VideoCapture(0)
 
 font = cv2.FONT_HERSHEY_PLAIN
 # starting_time = time.time()
@@ -27,25 +27,24 @@ while True:
 
 
     # #  # Tentukan posisi garis pembagi y
-    line_y1 = height // 3
-    line_y2 = 2 * (height // 3)
-    center_xx = 158
-    range_xx = 50
+    line_y1 = height // 2
+    # line_y2 = 2 * (height // 3)
+    
 
     # # # Gambar garis pembagi pada frame
     # cv2.line(frame, (0, line_y1), (width, line_y1), (0, 255, 0), thickness=2)
     # cv2.line(frame, (0, line_y2), (width, line_y2), (0, 255, 0), thickness=2)
 
     # Tentukan posisi garis pembagi x
-    line_x1 = width // 3
-    line_x2 = 2 * (width // 3)
+    line_x1 = width // 2
+    # line_x2 = 2 * (width // 3)
 
     # Gambar garis pembagi vertikal pada frame
     cv2.line(frame, (line_x1, 0), (line_x1, height), (0, 255, 0), thickness=2)
-    cv2.line(frame, (line_x2, 0), (line_x2, height), (0, 255, 0), thickness=2)
+    # cv2.line(frame, (line_x2, 0), (line_x2, height), (0, 255, 0), thickness=2)
 
     cv2.putText(frame, f'Ukuran per frame: {line_x1}', (10, line_x1 + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-    cv2.putText(frame, f'Ukuran per frame: {line_x1}', (225, line_x1 + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+    # cv2.putText(frame, f'Ukuran per frame: {line_x1}', (225, line_x1 + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
     cv2.putText(frame, f'Ukuran per frame: {line_x1}', (435, line_x1 + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
     # cv2.putText(frame, f'Total lebar frame: {width * 3} px', (10, line_y2 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
 
@@ -75,16 +74,27 @@ while True:
                 x = int(center_x - w / 2)
                 y = int(center_y - h / 2)
 
-                if x > line_x1 and x < line_x2:
-                    text_x = 10
-                elif x > line_x2:
-                    text_x = line_x2 + 10
-                else:
+                if x > line_x1 :
+                    text_x = 30 
+                else: 
                     text_x = line_x1 + 10
+                
+                   
 
-                text_y = (line_y1 + line_y2) // 2
+                # if x > line_x1 and x < line_x2:
+                #     text_x = 10
+                # elif x > line_x2:
+                #     text_x = line_x2 + 10
+                # else:
+                #     text_x = line_x1 + 10
 
-                cv2.putText(frame, 'Ada objek', (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                # text_y = (line_y1 + line_y2) // 2
+
+                if not x:  # Tambahkan pengecekan apakah teks sudah ditambahkan sebelumnya
+                    cv2.putText(frame, 'Ada objek', (text_x, line_x1), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                    ada_objek = True 
+
+                # cv2.putText(frame, 'Ada objek', (text_x, line_x1), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
                 
                 boxes.append([x, y, w, h])
                 confidences.append(float(confidence))
